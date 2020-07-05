@@ -1,38 +1,32 @@
-import matplotlib.pyplot as plt
-import numpy as np
 import cv2
 
-img1 = cv2.imread("res/text.jpg")
-img2 = cv2.imread("res/logo.jpg")
 
-res = cv2.imread("res/text.jpg")
+img = cv2.imread('res/threshold.jpg',0)
+bkpg = cv2.imread('res/bookpage.jpg',0)
 
-r, c, ch = img2.shape
+# simple t 127, p<127, p->0, p->127,  p->M m ->max value -> 255 
+# res, thresh1 = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
+# res, thresh2 = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY_INV)
+# res, thresh3 = cv2.threshold(img, 127, 255, cv2.THRESH_TOZERO)
+# res, thresh4 = cv2.threshold(img, 127, 255, cv2.THRESH_TOZERO_INV)
+# res, thresh5 = cv2.threshold(img, 127, 255, cv2.THRESH_TRUNC)
 
-roi = img1[57:r+57,200:c+200]
-print(img2.shape)
-print(img2.dtype)
+thresh6 = cv2.adaptiveThreshold(bkpg, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 1)
+thresh7 = cv2.adaptiveThreshold(bkpg, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 1)
 
-img2gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-_, msk = cv2.threshold(img2gray,245,255,cv2.THRESH_BINARY_INV)
+cv2.imshow('Original Image', bkpg)
+# cv2.imshow('Original Image', img)
+# cv2.imshow('THRESH_BINARY', thresh1)
+# cv2.imshow('THRESH_BINARY_INV', thresh2)
+# cv2.imshow('THRESH_TOZERO', thresh3)
+# cv2.imshow('THRESH_TOZERO_INV', thresh4)
+# cv2.imshow('THRESH_TOZERO_INV', thresh5)
+cv2.imshow('ADAPTIVE_THRESH_MEAN_C', thresh6)
+cv2.imshow('ADAPTIVE_THRESH_GAUSSIAN_C', thresh7)
 
-msk_inv = cv2.bitwise_not(msk)
+cv2.imwrite('result/ADAPTIVE_THRESH_MEAN_C.jpg', thresh6)
+cv2.imwrite('result/ADAPTIVE_THRESH_GAUSSIAN_C.jpg', thresh7)
 
-img1_bg = cv2.bitwise_and(roi, roi, mask=msk_inv)
-img2_fg = cv2.bitwise_and(img2, img2, mask=msk)
 
-dst = cv2.add(img1_bg, img2_fg)
-# (50,200,130) + (150,150,250) = (200,350,380) ===> (200,255,255)
-
-res[57:r+57, 200:c+200] = dst
-
-titles = ['img1', 'img2', 'roi', 'mask', 'img1_bg', 'img2_fg', 'dst', 'result']
-images = [img1, img2, roi, msk, img1_bg, img2_fg, dst, res]
-
-cv2.imshow('result', res)
-
-for i in range(0, len(images)):
-    plt.subplot(2,4,i+1),plt.imshow(images[i],'gray')
-    plt.title(titles[i])
-    plt.xticks([]),plt.yticks([])
-plt.show()
+cv2.waitKey(0)
+cv2.destroyAllWindows()
