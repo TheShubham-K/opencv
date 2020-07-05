@@ -1,32 +1,26 @@
 import cv2
+import numpy as np
 
+astro = cv2.imread('res/astro.jpg', 1)
+sea  = cv2.imread('res/sea.jpg', 1)
+# cv2.imshow('Astro', astro)
+# cv2.imshow('Sea', sea)
 
-img = cv2.imread('res/threshold.jpg',0)
-bkpg = cv2.imread('res/bookpage.jpg',0)
+hsv = cv2.cvtColor(astro, cv2.COLOR_BGR2HSV)
+lower_green = np.array([50,150,180])
+upper_green = np.array([200,245,255])
 
-# simple t 127, p<127, p->0, p->127,  p->M m ->max value -> 255 
-# res, thresh1 = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
-# res, thresh2 = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY_INV)
-# res, thresh3 = cv2.threshold(img, 127, 255, cv2.THRESH_TOZERO)
-# res, thresh4 = cv2.threshold(img, 127, 255, cv2.THRESH_TOZERO_INV)
-# res, thresh5 = cv2.threshold(img, 127, 255, cv2.THRESH_TRUNC)
+msk = cv2.inRange(hsv, lower_green, upper_green)
+msk_inv = cv2.bitwise_not(msk)
+astro = cv2.bitwise_and(astro, astro, mask=msk_inv)
+sea = cv2.bitwise_and(sea, sea, mask=msk)
+result = cv2.add(astro, sea)
 
-thresh6 = cv2.adaptiveThreshold(bkpg, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
-thresh7 = cv2.adaptiveThreshold(bkpg, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+# cv2.imshow("Background", sea)
+# cv2.imshow("Mask", msk)
+# cv2.imshow("Mask_Inverse", msk_inv)
+# cv2.imshow("HSV Image", hsv)
+cv2.imshow("Result", result)
 
-cv2.imshow('Original Image', bkpg)
-# cv2.imshow('Original Image', img)
-# cv2.imshow('THRESH_BINARY', thresh1)
-# cv2.imshow('THRESH_BINARY_INV', thresh2)
-# cv2.imshow('THRESH_TOZERO', thresh3)
-# cv2.imshow('THRESH_TOZERO_INV', thresh4)
-# cv2.imshow('THRESH_TOZERO_INV', thresh5)
-cv2.imshow('ADAPTIVE_THRESH_MEAN_C', thresh6)
-cv2.imshow('ADAPTIVE_THRESH_GAUSSIAN_C', thresh7)
-
-cv2.imwrite('result/ADAPTIVE_THRESH_MEAN_C.jpg', thresh6)
-cv2.imwrite('result/ADAPTIVE_THRESH_GAUSSIAN_C.jpg', thresh7)
-
-
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+if cv2.waitKey(0) == 27:
+    cv2.destroyAllWindows()
