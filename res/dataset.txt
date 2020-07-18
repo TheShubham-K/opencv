@@ -1,0 +1,7 @@
+Use the following links to download the datasets:
+
++ With mask dataset:
+https://ipfs.io/ipfs/QmbLvGJT6mhpZXdZ2pqvrnCgk61ZaKc6zDRJTYBtEjERrF?filename=%5CIPFS-Dataset%5Cwith_mask.7z
+
++ Face Dataset (Without Mask):
+https://ipfs.io/ipfs/Qmb8gBYf88oJ9WjS8aj6HYnv1KtRhDRCxQ6EaitwvTAbwe?filename=%5CIPFS-Dataset%5Cwithout_mask.7z
